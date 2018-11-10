@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "lib": ["es2015"],
+      "types": ["node"],
+      "allowSyntheticDefaultImports": true,
+      "declaration": false,
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
+    },
+    "include": ["index.ts", "App.ts", "database.ts"],
+    "exclude": ["node_modules"],
+    "compileOnSave": false,
+    "atom": {
+      "rewriteTsconfig": false
+    }
+  }
+  

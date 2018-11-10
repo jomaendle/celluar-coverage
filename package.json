@@ -1,0 +1,19 @@
+{
+  "name": "big-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node index.js",
+    "build": "tsc -p tsconfig.json --pretty",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Johannes Maendle+",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.3",
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "node-mysql-wrapper": "^2.9.3"
+  }
+}

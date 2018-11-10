@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <title>Hello World</title>
+        <style>
+            #content{
+                margin: 0px;
+                /* margin-top: 40px; */
+                /* border: solid 1px rgb(200,200,200); */
+                padding: 0.5em 30px;
+                padding-bottom: 60px;
+                background-color: white;
+                border-radius: 4px;
+                box-shadow: 0 0 5px 2px #d8d8d86b;
+            }
+            
+            span {
+                margin-bottom: 6px;
+                display: block; 
+            }
+
+            .input-fields{
+                margin-top: 5px;
+                margin-bottom: 15px;
+                margin-right: 70px;
+            }
+
+            h2, h3 {
+                border-bottom: solid 2px rgb(37, 130, 158);
+                padding-bottom: 8px;
+            }
+
+            p, span {
+                font-size: 14px;
+            }
+
+            body{
+                font-family: 'Montserrat', sans-serif;
+                background-color: rgb(248,248,248);
+            }
+
+            #input-area {
+                display: inline-flex;
+                margin-top: 15px;
+            }
+
+            .myButton {
+                -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+                -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+                box-shadow:inset 0px 1px 0px 0px #ffffff;
+                background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+                background:-moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+                background:-webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+                background:-o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+                background:-ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+                background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+                background-color:#ffffff;
+                -moz-border-radius:4px;
+                -webkit-border-radius:4px;
+                border-radius:4px;
+                border:1px solid #dcdcdc;
+                display:inline-block;
+                cursor:pointer;
+                color:#666666;
+                font-size:14px;
+                padding:5px 15px;
+                text-decoration:none;
+                text-shadow:0px 1px 0px #ffffff;
+            }
+            .myButton:hover {
+                background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+                background:-moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background:-webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background:-o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background:-ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+                background-color:#f6f6f6;
+            }
+
+            input.myButton {
+                position: absolute;
+                top: 215px;
+                left: 333px;
+            }
+
+            #break{
+                margin-top: 70px;
+            }
+            
+            #result-area {
+                display: inline-flex;
+            }
+
+            .results{
+                margin-right: 20em;
+                margin-left: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <h2>Netzabdeckung</h2>
+            <p>
+                Geben Sie den Längen- und Breitengrad grad ein, um die Mobilfunknetzabdeckung zu ermitteln.
+            </p>
+            <div id="input-area">     
+                <div class="input-fields">
+                    <span><b>Längengrad</b></span>
+                    <input id="lat" type="text" name="name"/>
+                </div>
+                <div class="input-fields">
+                    <span><b>Breitengrad</b></span>
+                    <input id="lon" type="text" name="lat"/>
+                </div>
+            </div>
+            <input class="myButton" type="submit" onclick="loadDoc();" value="Absenden">
+            
+            <h3 id="break">Ergebnisse</h3>
+            <div id="result-area">
+                <span>
+                    GSM:
+                </span>
+                <span id="gsm" class="results">
+                       
+                </span>
+                <br/>
+                <span >
+                    UMTS:
+                </span>
+                <span id="umts" class="results">
+                      
+                </span>
+                <br/>
+                <span>
+                        LTE:
+                </span>
+                <span id="lte" class="results">
+                  
+                </span>
+            </div>
+        </div>
+    </body>
+    <script lang="javascript">
+
+        function loadDoc() {
+            var xhttp = new XMLHttpRequest();
+            console.log("hier");
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var obj = JSON.parse(xhttp.response);
+                    let cellStations = countCellStations(obj);
+                    let resultsForSignal = rateAmountOfStations(cellStations);
+                    document.getElementById("gsm").innerHTML = resultsForSignal[0];
+                    document.getElementById("umts").innerHTML = resultsForSignal[1];
+                    document.getElementById("lte").innerHTML =  resultsForSignal[2];
+
+                    if(resultsForSignal[0] == "Poor" ){
+                        document.getElementById("gsm").style.color = "red";
+                    }else if(resultsForSignal[0] == "Good"){
+                        document.getElementById("gsm").style.color = "yellow";
+                    } else if(resultsForSignal[0] == "Very Good"){
+                        document.getElementById("gsm").style.color = "limegreen";
+                    }
+
+                    if(resultsForSignal[1] == "Poor"){
+                        document.getElementById("umts").style.color = "red";
+                    }else if(resultsForSignal[1] == "Good"){
+                        document.getElementById("umts").style.color = "yellow";
+                    } else if(resultsForSignal[1] == "Very Good"){
+                        document.getElementById("umts").style.color = "limegreen";
+                    }
+
+                    if(resultsForSignal[2] == "Poor"){
+                        document.getElementById("lte").style.color = "red";
+                    }else if(resultsForSignal[2] == "Good"){
+                        document.getElementById("lte").style.color = "yellow";
+                    } else if(resultsForSignal[2] == "Very Good"){
+                        document.getElementById("lte").style.color = "limegreen";
+                    }
+
+                }
+            };
+
+            let lat = document.getElementById("lat").value;
+            let lon = document.getElementById("lon").value;
+            xhttp.open("GET", "/query?lat="+lat+"&lon="+lon, true);
+            xhttp.send(); 
+            
+        }
+
+        function countCellStations(arr){
+            let results = [0,0,0];
+            let counterGSM = 0, counterUMTS = 0, counterLTE = 0;
+
+            for(let i =0; i<arr.length; i++){
+                if(arr[i].radio == "GSM"){
+                    counterGSM++;
+                }else if (arr[i].radio == "UMTS"){
+                    counterUMTS++;
+                }else if(arr[i].radio == "LTE"){
+                    counterLTE++;
+                }
+            }
+
+            results[0] = counterGSM;
+            results[1] = counterUMTS;
+            results[2] = counterLTE;
+
+            return results;
+        }
+
+        function rateAmountOfStations(arr){
+            let results = ["", "", ""];
+
+            for(let i =0; i<arr.length; i++){
+                if(arr[i] == 0){
+                    results[i] = "Poor";
+                }else if(arr[i] > 0 && arr[i] < 3){
+                    results[i] = "Good";
+                }else if(arr[i] >= 3){
+                    results[i] = "Very Good";
+                }
+            }
+
+            return results;
+        }
+
+    </script>
+</html>
